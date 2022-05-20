@@ -15,18 +15,33 @@ async function invokeAction({ action, id, name, email, phone }) {
       console.log(dataGetContactById);
       break;
     }
-    case 'add': {
-      const newContact = await contactsOperations.addContact(name, email, phone);
-      console.log('newContact', newContact);
+    case 'add':
+      try {
+        const newContact = await contactsOperations.addContact(name, email, phone);
+
+        if (!newContact) {
+          throw Error(`Contact with id: "${id}" does not exist!`);
+        }
+        console.log('newContact', newContact);
+      } catch (error) {
+        console.warn(error.message);
+      }
       break;
-    }
-    case 'remove': {
-      const deleteContact = await contactsOperations.removeContact(id);
-      console.log('deleteContact', deleteContact);
+
+    case 'remove':
+      try {
+        const deleteContact = await contactsOperations.removeContact(id);
+        if (!deleteContact) {
+          throw Error(`Contact with id: "${id}" does not exist!`);
+        }
+        console.log('deleteContact', deleteContact);
+      } catch (error) {
+        console.warn(error.message);
+      }
       break;
-    }
+
     default: {
-      console.log('Unknown action');
+      console.warn('Unknown action');
       break;
     }
   }
